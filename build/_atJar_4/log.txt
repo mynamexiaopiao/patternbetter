@@ -1,0 +1,7 @@
+Java Launcher: C:\Users\Administrator\.jdks\ms-17.0.15\bin\java.exe
+Arguments: '--inJar, D:\mod\expattern_better\build\fg_cache\net\minecraftforge\forge\1.20.1-47.4.3\forge-1.20.1-47.4.3-injected.jar, --outJar, D:\mod\expattern_better\build\fg_cache\net\minecraftforge\forge\1.20.1-47.4.3_mapped_official_1.20.1\forge-1.20.1-47.4.3_mapped_official_1.20.1.jar, --logFile, accesstransform.log, --atFile, D:\mod\expattern_better\src\main\resources\META-INF\accesstransformer.cfg, --atFile, D:\mod\expattern_better\build\_atJar_4\parent_at.cfg'
+Classpath:
+ - C:\Users\Administrator\.gradle\caches\forge_gradle\maven_downloader\net\minecraftforge\accesstransformers\8.2.1\accesstransformers-8.2.1-fatjar.jar
+Working directory: D:\mod\expattern_better\build\_atJar_4
+Main class: net.minecraftforge.accesstransformer.TransformerProcessor
+====================================
