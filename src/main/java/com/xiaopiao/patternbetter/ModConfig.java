@@ -1,18 +1,21 @@
 package com.xiaopiao.patternbetter;
 
-import net.minecraftforge.common.ForgeConfigSpec;
-import net.minecraftforge.eventbus.api.SubscribeEvent;
-import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.fml.event.config.ModConfigEvent;
 
-@Mod.EventBusSubscriber(modid = PatternBetter.MODID, bus = Mod.EventBusSubscriber.Bus.MOD)
+import net.neoforged.bus.api.SubscribeEvent;
+import net.neoforged.fml.common.EventBusSubscriber;
+import net.neoforged.fml.event.config.ModConfigEvent;
+import net.neoforged.neoforge.common.ModConfigSpec;
+
+@EventBusSubscriber(modid = PatternBetter.MODID)
 public class ModConfig {
 
-    private static ForgeConfigSpec.Builder BUILDER = new ForgeConfigSpec.Builder();
+    private static ModConfigSpec.Builder BUILDER = new ModConfigSpec.Builder();
 
-    private static ForgeConfigSpec.IntValue SLOT_VALUE = BUILDER.defineInRange("slotvalue",36,0,Integer.MAX_VALUE);
+    private static ModConfigSpec.IntValue SLOT_VALUE = BUILDER
+            .comment("the number of slot")
+            .defineInRange("slotvalue",36,0,Integer.MAX_VALUE);
 
-    public static final ForgeConfigSpec CONFIG = BUILDER.build();
+    public static final ModConfigSpec CONFIG = BUILDER.build();
 
     public static int slotValue;
 
