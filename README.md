@@ -1,25 +1,26 @@
+# Introduce
+This is an add-on mod for Applied Energistics 2 (AE2) and ExtendAE, introducing new features for the ME Pattern Provider.
+# ✨ New Features
+✅ The number of pattern slots in the Extended ME Pattern Provider is now customizable - Break through the default limit, set as many slots as you want!
 
-Installation information
-=======
+✅ ×2 / ÷2 ×5 / ÷5 ×10 / ÷10 Quick Actions in menu - Duplicate or halve patterns in bulk for double efficiency!
 
-This template repository can be directly cloned to get you started with a new
-mod. Simply create a new repository cloned from this one, by following the
-instructions provided by [GitHub](https://docs.github.com/en/repositories/creating-and-managing-repositories/creating-a-repository-from-a-template).
+✅ High-Capacity UI Adaptation - Even with over 36 slots, everything displays perfectly!
 
-Once you have your clone, simply open the repository in the IDE of your choice. The usual recommendation for an IDE is either IntelliJ IDEA or Eclipse.
+# ⚙️ Configuration
+how to change the number of pattern slots in the Extended ME Pattern Provider?
 
-If at any point you are missing libraries in your IDE, or you've run into problems you can
-run `gradlew --refresh-dependencies` to refresh the local cache. `gradlew clean` to reset everything 
-{this does not affect your code} and then start the process again.
+1.20.1: Find the mod config file in the config folder of your game directory and edit it with a text editor (default: 36 slots).
 
-Mapping Names:
-============
-By default, the MDK is configured to use the official mapping names from Mojang for methods and fields 
-in the Minecraft codebase. These names are covered by a specific license. All modders should be aware of this
-license. For the latest license text, refer to the mapping file itself, or the reference copy here:
-https://github.com/NeoForged/NeoForm/blob/main/Mojang.md
+1.21.1: Supports in-game configuration or manual file editing.
 
-Additional Resources: 
-==========
-Community Documentation: https://docs.neoforged.net/  
-NeoForged Discord: https://discord.neoforged.net/
+⚠️ Remember to restart the game after changes!
+
+# 🚨 Important Notes
+⚠️ Warning: Placing too many patterns then using ME Packing Tape may cause data corruption!
+
+🔧 Solution: Install the PacketFixer mod to fix this issue.
+
+# 📢 Plans
+💡 Got feature requests? Feel free to suggest! 
+
