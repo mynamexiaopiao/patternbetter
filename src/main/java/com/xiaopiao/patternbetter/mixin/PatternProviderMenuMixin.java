@@ -28,7 +28,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.function.Consumer;
 
-@Mixin(value = PatternProviderMenu.class,priority = 1001)
+@Mixin(value = PatternProviderMenu.class)
 @Implements(@Interface(iface = IActionHolder.class, prefix = "IActionHolder$"))
 public abstract class PatternProviderMenuMixin extends AEBaseMenu {
 
@@ -43,11 +43,15 @@ public abstract class PatternProviderMenuMixin extends AEBaseMenu {
     @Inject(method = "<init>(Lnet/minecraft/world/inventory/MenuType;ILnet/minecraft/world/entity/player/Inventory;Lappeng/helpers/patternprovider/PatternProviderLogicHost;)V", at = @At("RETURN"),remap = false)
     public void init(MenuType menuType, int id, Inventory playerInventory, PatternProviderLogicHost host, CallbackInfo ci){
 
-        this.actionMap.put("multiply", (paras) -> multiply2(false));
-        this.actionMap.put("divide", (paras) -> multiply2(true));
+        this.actionMap.put("multiply2", (paras) -> multiply2(false,2));
+        this.actionMap.put("divide2", (paras) -> multiply2(true ,2));
+        this.actionMap.put("multiply5", (paras) -> multiply2(false,5));
+        this.actionMap.put("divide5", (paras) -> multiply2(true , 5));
+        this.actionMap.put("multiply10", (paras) -> multiply2(false , 10));
+        this.actionMap.put("divide10", (paras) -> multiply2(true , 10));
     }
     @Unique
-    public void multiply2(boolean is){
+    public void multiply2(boolean is , int i){
         List<Slot> slots = (this).getSlots(SlotSemantics.ENCODED_PATTERN);
         for (Slot slot : slots) {
             ItemStack stack = slot.getItem();
@@ -59,10 +63,10 @@ public abstract class PatternProviderMenuMixin extends AEBaseMenu {
                 GenericStack[] mulOutput = new GenericStack[output.length];
 
 
-                if ((hasStackWithCountOne( input) || hasStackWithCountOne(output)) && is)continue;
+                if ((hasStackWithCountOne( input , i) || hasStackWithCountOne(output , i)) && is)continue;
 
-                modifyStacks(input,  mulInput, 2, is);
-                modifyStacks(output, mulOutput, 2, is);
+                modifyStacks(input,  mulInput, i, is);
+                modifyStacks(output, mulOutput, i, is);
 
                 ItemStack newPattern = PatternDetailsHelper.encodeProcessingPattern(mulInput,mulOutput);
                 slot.set(newPattern);
@@ -82,9 +86,9 @@ public abstract class PatternProviderMenuMixin extends AEBaseMenu {
         }
     }
 
-    private static boolean hasStackWithCountOne(GenericStack[] stacks) {
+    private static boolean hasStackWithCountOne(GenericStack[] stacks, int i) {
         for (GenericStack stack : stacks) {
-            if (stack != null && stack.amount() == 1) {
+            if (stack != null && (stack.amount() % i != 0  || stack.amount() /i <0)) {
                 return true;
             }
         }

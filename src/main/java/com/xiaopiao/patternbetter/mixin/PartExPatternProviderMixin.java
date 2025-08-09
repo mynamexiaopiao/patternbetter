@@ -12,7 +12,7 @@ import org.spongepowered.asm.mixin.Overwrite;
 import org.spongepowered.asm.mixin.injection.Constant;
 import org.spongepowered.asm.mixin.injection.ModifyConstant;
 
-@Mixin(PartExPatternProvider.class)
+@Mixin(value = PartExPatternProvider.class  , priority = 500)
 public abstract class PartExPatternProviderMixin extends AEBasePart implements PatternProviderLogicHost {
     public PartExPatternProviderMixin(IPartItem<?> partItem) {
         super(partItem);

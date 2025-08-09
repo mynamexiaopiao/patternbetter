@@ -27,7 +27,7 @@ import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
-@Mixin(GuiExPatternProvider.class)
+@Mixin(value = GuiExPatternProvider.class )
 public abstract class GuiExPatternProviderMixin extends PatternProviderScreen<ContainerExPatternProvider> {
 
 

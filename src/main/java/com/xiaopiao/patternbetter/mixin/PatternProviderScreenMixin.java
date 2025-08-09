@@ -3,6 +3,7 @@ package com.xiaopiao.patternbetter.mixin;
 import appeng.client.gui.AEBaseScreen;
 import appeng.client.gui.implementations.PatternProviderScreen;
 import appeng.client.gui.style.ScreenStyle;
+import appeng.client.gui.widgets.VerticalButtonBar;
 import appeng.menu.implementations.PatternProviderMenu;
 import com.glodblock.github.extendedae.client.button.ActionEPPButton;
 import com.glodblock.github.extendedae.network.EPPNetworkHandler;
@@ -11,26 +12,53 @@ import com.xiaopiao.patternbetter.NewIcon;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Inventory;
 import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
-@Mixin(PatternProviderScreen.class)
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+
+@Mixin(value = PatternProviderScreen.class )
 public class PatternProviderScreenMixin<C extends PatternProviderMenu> extends AEBaseScreen<C> {
+    @Unique
+    VerticalButtonBar rightToolbar = new VerticalButtonBar();
     public PatternProviderScreenMixin(C menu, Inventory playerInventory, Component title, ScreenStyle style) {
         super(menu, playerInventory, title, style);
     }
 
     @Inject(method = "<init>", at = @At("RETURN"),remap = false)
-    private void injectInit(PatternProviderMenu menu, Inventory playerInventory, Component title, ScreenStyle style, CallbackInfo ci) {
+    private void injectInit(PatternProviderMenu menu, Inventory playerInventory, Component title, ScreenStyle style, CallbackInfo ci) throws NoSuchMethodException, InvocationTargetException, IllegalAccessException {
 
-        ActionEPPButton multiply = new ActionEPPButton((b) -> EPPNetworkHandler.INSTANCE.sendToServer(new CGenericPacket("multiply")), NewIcon.MULTIPLY2);
-        ActionEPPButton divide = new ActionEPPButton((b) -> EPPNetworkHandler.INSTANCE.sendToServer(new CGenericPacket("divide")), NewIcon.DIVIDE2);
+        ActionEPPButton multiply2 = new ActionEPPButton((b) -> EPPNetworkHandler.INSTANCE.sendToServer(new CGenericPacket("multiply2")), NewIcon.MULTIPLY2);
+        ActionEPPButton divide2 = new ActionEPPButton((b) -> EPPNetworkHandler.INSTANCE.sendToServer(new CGenericPacket("divide2")), NewIcon.DIVIDE2);
+        ActionEPPButton multiply5 = new ActionEPPButton((b) -> EPPNetworkHandler.INSTANCE.sendToServer(new CGenericPacket("multiply5")), NewIcon.MULTIPLY5);
+        ActionEPPButton divide5 = new ActionEPPButton((b) -> EPPNetworkHandler.INSTANCE.sendToServer(new CGenericPacket("divide5")), NewIcon.DIVIDE5);
+        ActionEPPButton multiply10 = new ActionEPPButton((b) -> EPPNetworkHandler.INSTANCE.sendToServer(new CGenericPacket("multiply10")), NewIcon.MULTIPLY10);
+        ActionEPPButton divide10 = new ActionEPPButton((b) -> EPPNetworkHandler.INSTANCE.sendToServer(new CGenericPacket("divide10")), NewIcon.DIVIDE10);
 
-        this.addToLeftToolbar(multiply);
-        this.addToLeftToolbar(divide);
 
 
+//        this.addToLeftToolbar(multiply2);
+//        this.addToLeftToolbar(divide2);
+//        this.addToLeftToolbar(multiply5);
+//        this.addToLeftToolbar(divide5);
+//        this.addToLeftToolbar(multiply10);
+//        this.addToLeftToolbar(divide10);
 
+        Class<? extends VerticalButtonBar> aClass = rightToolbar.getClass();
+        Method setRight = aClass.getMethod("setRight" , boolean.class);
+        setRight.invoke(rightToolbar , true);
+
+
+        rightToolbar.add(divide2);
+        rightToolbar.add(multiply2);
+        rightToolbar.add(divide5);
+        rightToolbar.add(multiply5);
+        rightToolbar.add(divide10);
+        rightToolbar.add(multiply10);
+
+        this.widgets.add("rightBar", rightToolbar);
     }
 }

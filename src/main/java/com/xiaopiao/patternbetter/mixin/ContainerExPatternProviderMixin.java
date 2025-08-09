@@ -18,7 +18,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import java.util.List;
 
 
-@Mixin(value = ContainerExPatternProvider.class,priority = 1001)
+@Mixin(value = ContainerExPatternProvider.class)
 @Implements(@Interface(iface = IPage.class, prefix = "aebetter$"))
 public abstract class ContainerExPatternProviderMixin extends PatternProviderMenu{
 

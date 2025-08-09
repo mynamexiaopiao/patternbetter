@@ -1,5 +1,5 @@
 {
-  "required": true,
+  "required": false,
   "minVersion": "0.8",
   "package": "com.xiaopiao.patternbetter.mixin",
   "compatibilityLevel": "JAVA_17",
@@ -8,14 +8,16 @@
     "ContainerExPatternProviderMixin",
     "PartExPatternProviderMixin",
     "PatternProviderMenuMixin",
-    "TileExPatternProviderMixin"
+    "TileExPatternProviderMixin",
+    "VerticalButtonBarMixin"
   ],
   "client": [
     "GuiExPatternProviderMixin",
     "PatternProviderScreenMixin"
   ],
+
   "injectors": {
-    "defaultRequire": 1
+    "defaultRequire": 0
   },
   "overwrites": {
     "requireAnnotations": true
