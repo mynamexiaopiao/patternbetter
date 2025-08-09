@@ -1,20 +1,17 @@
 package com.xiaopiao.patternbetter.mixin;
 
 
-import appeng.client.gui.Icon;
 import appeng.client.gui.implementations.PatternProviderScreen;
 import appeng.client.gui.style.PaletteColor;
 import appeng.client.gui.style.ScreenStyle;
-import appeng.client.gui.widgets.VerticalButtonBar;
 import appeng.menu.SlotSemantics;
 import com.glodblock.github.extendedae.api.IPage;
 import com.glodblock.github.extendedae.client.button.ActionEPPButton;
+import com.glodblock.github.extendedae.client.button.EPPIcon;
 import com.glodblock.github.extendedae.client.gui.GuiExPatternProvider;
 import com.glodblock.github.extendedae.container.ContainerExPatternProvider;
-import com.glodblock.github.extendedae.network.EAENetworkHandler;
-import com.glodblock.github.extendedae.network.packet.CEAEGenericPacket;
+import com.glodblock.github.extendedae.network.EPPNetworkHandler;
 import com.glodblock.github.extendedae.network.packet.CUpdatePage;
-import com.xiaopiao.patternbetter.NewIcon;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
@@ -30,14 +27,9 @@ import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
-@Mixin(GuiExPatternProvider.class)
+@Mixin(value = GuiExPatternProvider.class )
 public abstract class GuiExPatternProviderMixin extends PatternProviderScreen<ContainerExPatternProvider> {
 
-    @Unique
-    ScreenStyle screenStyle;
-
-    @Unique
-    private  VerticalButtonBar rightToolbar;
 
     public GuiExPatternProviderMixin(ContainerExPatternProvider menu, Inventory playerInventory, Component title, ScreenStyle style) {
         super(menu, playerInventory, title, style);
@@ -60,14 +52,12 @@ public abstract class GuiExPatternProviderMixin extends PatternProviderScreen<Co
 
 
             //获取ae通用界面样式
-            int color = screenStyle.getColor(PaletteColor.DEFAULT_TEXT_COLOR).toARGB();
+            int color = style.getColor(PaletteColor.DEFAULT_TEXT_COLOR).toARGB();
             guiGraphics.drawString(font, Component.translatable("gui.pattern_provider.page").append(": "+(iPage + 1))
-                    , leftPos+ textWidth +imageWidth/10, topPos + imageHeight/5-18,color,false);
+                    , leftPos+ textWidth +imageWidth/10 - 40, topPos + imageHeight/5-17,color,false);
         }
 
     }
-
-
 
     @Unique
     public void updateBeforeRender() {
@@ -103,23 +93,25 @@ public abstract class GuiExPatternProviderMixin extends PatternProviderScreen<Co
     public ActionEPPButton prevPage;
     @Inject(method = "<init>", at = @At("RETURN"),remap = false)
     private void injectInit(ContainerExPatternProvider menu, Inventory playerInventory, Component title, ScreenStyle style, CallbackInfo ci) {
-        this.screenStyle = style;
-        this.rightToolbar = new VerticalButtonBar();
-        ContainerExPatternProvider menu1 = this.getMenu();
 
-        if (menu1 instanceof IPage page1){
-            //前进后退按钮
-            this.prevPage = new ActionEPPButton((b) -> EAENetworkHandler.INSTANCE.sendToServer(new CUpdatePage(() -> page1.getPage() - 1)), Icon.ARROW_LEFT);
-            this.nextPage = new ActionEPPButton((b) -> EAENetworkHandler.INSTANCE.sendToServer(new CUpdatePage(() -> page1.getPage() + 1)), Icon.ARROW_RIGHT);
+
+        if (menu.isClientSide() && menu instanceof ContainerExPatternProvider){
+
+                ContainerExPatternProvider menu1 = (ContainerExPatternProvider)this.getMenu();
+
+                if (menu1 instanceof IPage page1){
+                    this.prevPage = new ActionEPPButton((b) -> EPPNetworkHandler.INSTANCE.sendToServer(new CUpdatePage(() -> page1.getPage() - 1)), EPPIcon.LEFT);
+                    this.nextPage = new ActionEPPButton((b) -> EPPNetworkHandler.INSTANCE.sendToServer(new CUpdatePage(() -> page1.getPage() + 1)), EPPIcon.RIGHT);
+
+
+                }
+                this.addToLeftToolbar(this.nextPage);
+                this.addToLeftToolbar(this.prevPage);
 
         }
 
 
-        this.addToLeftToolbar(this.nextPage);
-        this.addToLeftToolbar(this.prevPage);
-
-
-
     }
+
 
 }

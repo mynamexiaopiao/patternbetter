@@ -1,10 +1,6 @@
 package com.xiaopiao.patternbetter.mixin;
 
 
-import appeng.api.crafting.IPatternDetails;
-import appeng.api.crafting.PatternDetailsHelper;
-import appeng.api.stacks.GenericStack;
-import appeng.crafting.pattern.AEProcessingPattern;
 import appeng.helpers.patternprovider.PatternProviderLogicHost;
 import appeng.menu.SlotSemantics;
 import appeng.menu.guisync.GuiSync;
@@ -12,30 +8,25 @@ import appeng.menu.implementations.PatternProviderMenu;
 import appeng.menu.slot.AppEngSlot;
 import com.glodblock.github.extendedae.api.IPage;
 import com.glodblock.github.extendedae.container.ContainerExPatternProvider;
-import com.glodblock.github.glodium.network.packet.sync.ActionMap;
-import com.glodblock.github.glodium.network.packet.sync.IActionHolder;
 import net.minecraft.world.entity.player.Inventory;
-import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.inventory.Slot;
-import net.minecraft.world.item.ItemStack;
-import org.jetbrains.annotations.NotNull;
-import org.spongepowered.asm.mixin.Implements;
-import org.spongepowered.asm.mixin.Interface;
-import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.Unique;
+import org.spongepowered.asm.mixin.*;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
-import java.util.Arrays;
 import java.util.List;
 
 
-@Mixin(value = ContainerExPatternProvider.class,priority = 1001)
-@Implements({
-        @Interface(iface = IPage.class, prefix = "IPage$"),
-})
+@Mixin(value = ContainerExPatternProvider.class)
+@Implements(@Interface(iface = IPage.class, prefix = "aebetter$"))
 public abstract class ContainerExPatternProviderMixin extends PatternProviderMenu{
+
+    public ContainerExPatternProviderMixin(int id, Inventory playerInventory, PatternProviderLogicHost host) {
+        super(id, playerInventory, host);
+    }
+
+
 
     @GuiSync(11451)
     @Unique
@@ -43,12 +34,6 @@ public abstract class ContainerExPatternProviderMixin extends PatternProviderMen
 
     @Unique
     public int maxPage = 0;
-
-
-
-    public ContainerExPatternProviderMixin(MenuType<? extends PatternProviderMenu> menuType, int id, Inventory playerInventory, PatternProviderLogicHost host) {
-        super(menuType, id, playerInventory, host);
-    }
 
     @Unique
     public void showPage() {
@@ -73,23 +58,18 @@ public abstract class ContainerExPatternProviderMixin extends PatternProviderMen
     public void init(int id, Inventory playerInventory, PatternProviderLogicHost host, CallbackInfo ci){
 
 
-        int maxSlots = this.getSlots(SlotSemantics.ENCODED_PATTERN).size();
+        int maxSlots = (this).getSlots(SlotSemantics.ENCODED_PATTERN).size();
         this.maxPage = (maxSlots + 36 - 1) / 36;
 
     }
 
 
-
-
-
-
     @Unique
-    public int IPage$getPage(){
+    public int aebetter$getPage(){
         return this.page;
     }
     @Unique
-    public void IPage$setPage(int page){
+    public void aebetter$setPage(int page){
         this.page = page;
     }
-
 }
