@@ -1,25 +1,34 @@
 
-Installation information
-=======
+# 简介
 
-This template repository can be directly cloned to get you started with a new
-mod. Simply create a new repository cloned from this one, by following the
-instructions provided by [GitHub](https://docs.github.com/en/repositories/creating-and-managing-repositories/creating-a-repository-from-a-template).
+这是一个 AE2 和 ExtendedAE 的附属模组，对 ME 样板供应器添加了一些新功能：
 
-Once you have your clone, simply open the repository in the IDE of your choice. The usual recommendation for an IDE is either IntelliJ IDEA or Eclipse.
+现在 ME 拓展样板供应器的可放置样板数可以自定义了，并为超过 36 格样板配置做了界面适配；
 
-If at any point you are missing libraries in your IDE, or you've run into problems you can
-run `gradlew --refresh-dependencies` to refresh the local cache. `gradlew clean` to reset everything 
-{this does not affect your code} and then start the process again.
+ ME 拓展样板供应器和 ME 样板供应器新增 × 2  ÷ 2      × 5 ÷ 5     × 10  ÷ 10 功能，能快速对样板翻倍。
 
-Mapping Names:
-============
-By default, the MDK is configured to use the official mapping names from Mojang for methods and fields 
-in the Minecraft codebase. These names are covered by a specific license. All modders should be aware of this
-license. For the latest license text, refer to the mapping file itself, or the reference copy here:
-https://github.com/NeoForged/NeoForm/blob/main/Mojang.md
 
-Additional Resources: 
-==========
-Community Documentation: https://docs.neoforged.net/  
-NeoForged Discord: https://discord.neoforged.net/
+# gtl适配
+
+现在安装本mod到gtl整合包不会崩溃了，添加到整合包后模组配置文件失效，以整合包配置文件为准
+
+# 配置文件
+
+1.20.1：启动游戏后找到 config 文件夹，里面有模组同名配置文件，用记事本打开后修改（默认 36）；
+
+1.21.1：可在游戏内打开配置，或同 1.20.1。
+
+修改完成都要重启游戏！
+
+# 注意事项
+
+如果如果样板供应器放特别特别多样板然后用 ME 封装胶带可能会导致爆数据，安装 packetfixer 以修复。
+
+如果无法被整除操作无效
+
+# 未来计划
+
+如果大家有什么想要的功能可以向作者留言但可能做不出来，技术力拉完了，有 Bug 也可以反馈。
+
+
+仓库的git提交很奇怪（作者复制粘贴提交的），请见谅！
