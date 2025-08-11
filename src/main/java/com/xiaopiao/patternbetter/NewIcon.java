@@ -4,8 +4,7 @@ import appeng.client.gui.style.Blitter;
 import net.minecraft.resources.ResourceLocation;
 
 public class NewIcon {
-    @SuppressWarnings("all")
-    private static final ResourceLocation TEXTURE = new ResourceLocation(PatternBetter.MODID,"textures/gui/nicons.png");
+    private static final ResourceLocation TEXTURE = ResourceLocation.fromNamespaceAndPath(PatternBetter.MODID,"textures/gui/nicons.png");
 
 
 
@@ -25,6 +24,5 @@ public class NewIcon {
         MULTIPLY10 = Blitter.texture(TEXTURE, 64, 64).src(0, 16, 16, 16);
         DIVIDE10 = Blitter.texture(TEXTURE, 64, 64).src(16, 16, 16, 16);
         PATTERNSINTO = Blitter.texture(TEXTURE, 64, 64).src(32, 16, 16, 16);
-
     }
 }

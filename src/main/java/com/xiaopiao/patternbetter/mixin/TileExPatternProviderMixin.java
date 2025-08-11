@@ -13,11 +13,12 @@ import org.spongepowered.asm.mixin.Overwrite;
 import org.spongepowered.asm.mixin.injection.Constant;
 import org.spongepowered.asm.mixin.injection.ModifyConstant;
 
-@Mixin(value = TileExPatternProvider.class   , priority = 500)
+@Mixin(value = TileExPatternProvider.class , priority =  10000)
 public abstract class TileExPatternProviderMixin extends PatternProviderBlockEntity {
     public TileExPatternProviderMixin(BlockEntityType<?> blockEntityType, BlockPos pos, BlockState blockState) {
         super(blockEntityType, pos, blockState);
     }
+
 
     @ModifyConstant(
             method = {"createLogic"},

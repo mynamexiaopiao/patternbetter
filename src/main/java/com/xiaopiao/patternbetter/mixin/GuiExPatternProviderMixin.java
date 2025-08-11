@@ -11,7 +11,7 @@ import com.glodblock.github.extendedae.api.IPage;
 import com.glodblock.github.extendedae.client.button.ActionEPPButton;
 import com.glodblock.github.extendedae.client.gui.GuiExPatternProvider;
 import com.glodblock.github.extendedae.container.ContainerExPatternProvider;
-import com.glodblock.github.extendedae.network.EPPNetworkHandler;
+import com.glodblock.github.extendedae.network.EAENetworkHandler;
 import com.glodblock.github.extendedae.network.packet.CUpdatePage;
 import com.xiaopiao.patternbetter.ModConfig;
 import net.minecraft.client.Minecraft;
@@ -32,20 +32,21 @@ import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
-@Mixin(value = GuiExPatternProvider.class )
+@Mixin(GuiExPatternProvider.class)
 public abstract class GuiExPatternProviderMixin extends PatternProviderScreen<ContainerExPatternProvider> {
-    @Unique
-    private AETextField numberInputField;
-    @Unique
-    private String numberInput;
+
     @Unique
     private static int iPage = 0;
     @Unique
     private static int maxPage = 0;
     @Unique
-    public ActionEPPButton nextPage;
+    private ActionEPPButton nextPage;
     @Unique
-    public ActionEPPButton prevPage;
+    private ActionEPPButton prevPage;
+    @Unique
+    private AETextField numberInputField;
+    @Unique
+    private String numberInput;
 
     public GuiExPatternProviderMixin(ContainerExPatternProvider menu, Inventory playerInventory, Component title, ScreenStyle style) {
         super(menu, playerInventory, title, style);
@@ -55,8 +56,6 @@ public abstract class GuiExPatternProviderMixin extends PatternProviderScreen<Co
     @Unique
     public void render(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTicks){
         super.render(guiGraphics, mouseX, mouseY, partialTicks);
-
-
         int maxSlots = this.getMenu().getSlots(SlotSemantics.ENCODED_PATTERN).size();
         if (maxSlots>36){
             Font fontRenderer = Minecraft.getInstance().font;
@@ -65,19 +64,19 @@ public abstract class GuiExPatternProviderMixin extends PatternProviderScreen<Co
             Component translatedText = Component.translatable("itemGroup.extendedae");
             int textWidth = fontRenderer.width(translatedText);
 
-
             //获取ae通用界面样式
             int color = style.getColor(PaletteColor.DEFAULT_TEXT_COLOR).toARGB();
             guiGraphics.drawString(font, Component.translatable("gui.pattern_provider.page").append(": "+(iPage + 1))
-                    , leftPos+ textWidth +imageWidth/10 - 40, topPos + imageHeight/5-17,color,false);
+                    , leftPos+ textWidth +imageWidth/10, topPos + imageHeight/5-18,color,false);
         }
-
     }
+
 
     @Unique
     public void updateBeforeRender() {
         super.updateBeforeRender();
         try {
+            //反射获取page和maxPage
             ContainerExPatternProvider menu1 = this.getMenu();
 
             Class<? extends ContainerExPatternProvider> aClass = menu1.getClass();
@@ -90,7 +89,6 @@ public abstract class GuiExPatternProviderMixin extends PatternProviderScreen<Co
             Field fieldMaxPage = aClass.getDeclaredField("maxPage");
             Integer maxPage = (Integer)fieldMaxPage.get(menu1);
 
-
             iPage = page;
             this.maxPage = maxPage;
 
@@ -101,6 +99,7 @@ public abstract class GuiExPatternProviderMixin extends PatternProviderScreen<Co
                 this.nextPage.setVisibility(false);
                 this.prevPage.setVisibility(false);
             }
+
         } catch (NoSuchMethodException | InvocationTargetException | IllegalAccessException | NoSuchFieldException e) {
             throw new RuntimeException(e);
         }
@@ -109,13 +108,12 @@ public abstract class GuiExPatternProviderMixin extends PatternProviderScreen<Co
 
     @Inject(method = "<init>", at = @At("RETURN"),remap = false)
     private void injectInit(ContainerExPatternProvider menu, Inventory playerInventory, Component title, ScreenStyle style, CallbackInfo ci) {
-
         ContainerExPatternProvider menu1 = this.getMenu();
 
         if (menu1 instanceof IPage page1){
             //前进后退按钮
-            this.prevPage = new ActionEPPButton((b) -> EPPNetworkHandler.INSTANCE.sendToServer(new CUpdatePage(() -> page1.getPage() - 1)), Icon.ARROW_LEFT);
-            this.nextPage = new ActionEPPButton((b) -> EPPNetworkHandler.INSTANCE.sendToServer(new CUpdatePage(() -> page1.getPage() + 1)), Icon.ARROW_RIGHT);
+            this.prevPage = new ActionEPPButton((b) -> EAENetworkHandler.INSTANCE.sendToServer(new CUpdatePage(() -> page1.getPage() - 1)), Icon.ARROW_LEFT);
+            this.nextPage = new ActionEPPButton((b) -> EAENetworkHandler.INSTANCE.sendToServer(new CUpdatePage(() -> page1.getPage() + 1)), Icon.ARROW_RIGHT);
 
         }
 
@@ -138,6 +136,7 @@ public abstract class GuiExPatternProviderMixin extends PatternProviderScreen<Co
             this.numberInputField = this.widgets.addTextField("numberInputField");
             this.numberInputField.setResponder(this::onlyNumber);
         }
+
 
     }
 
@@ -180,7 +179,7 @@ public abstract class GuiExPatternProviderMixin extends PatternProviderScreen<Co
                 int pageToSend = inputValue - 1;
                 pageToSend = pageToSend > maxPage ? 0 : pageToSend;
                 int finalPage = pageToSend;
-                EPPNetworkHandler.INSTANCE.sendToServer(new CUpdatePage(() -> finalPage));
+                EAENetworkHandler.INSTANCE.sendToServer(new CUpdatePage(() -> finalPage));
 
             } catch (NumberFormatException e) {
                 // 忽略无效数字格式
@@ -203,7 +202,7 @@ public abstract class GuiExPatternProviderMixin extends PatternProviderScreen<Co
                 int pageToSend = inputValue - 1;
                 pageToSend = pageToSend > maxPage ? 0 : pageToSend;
                 int finalPage = pageToSend;
-                EPPNetworkHandler.INSTANCE.sendToServer(new CUpdatePage(() -> finalPage));
+                EAENetworkHandler.INSTANCE.sendToServer(new CUpdatePage(() -> finalPage));
             } catch (NumberFormatException e) {
                 // 忽略无效数字格式
             }

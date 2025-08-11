@@ -1,0 +1,23 @@
+{
+  "required": true,
+  "package": "com.xiaopiao.patternbetter.mixin",
+  "compatibilityLevel": "JAVA_21",
+  "mixins": [
+    "ContainerExPatternProviderMixin",
+    "PartExPatternProviderMixin",
+    "PatternProviderMenuMixin",
+    "TileExPatternProviderMixin",
+    "VerticalButtonBarMixin"
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  },
+  "overwrites": {
+    "requireAnnotations": true
+  },
+  "client": [
+    "EPPButtonMixin",
+    "GuiExPatternProviderMixin",
+    "PatternProviderScreenMixin"
+  ]
+}

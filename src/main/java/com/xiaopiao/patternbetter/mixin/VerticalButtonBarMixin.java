@@ -3,22 +3,31 @@ package com.xiaopiao.patternbetter.mixin;
 import appeng.client.Point;
 import appeng.client.gui.ICompositeWidget;
 import appeng.client.gui.widgets.VerticalButtonBar;
+import appeng.core.AppEng;
+import com.xiaopiao.patternbetter.PatternBetter;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.renderer.Rect2i;
+import net.minecraft.resources.ResourceLocation;
 import org.spongepowered.asm.mixin.*;
+import org.spongepowered.asm.mixin.injection.At;
+import org.spongepowered.asm.mixin.injection.Inject;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 import java.util.List;
 
-@Mixin(value = VerticalButtonBar.class)
+@Mixin(VerticalButtonBar.class)
 public abstract class VerticalButtonBarMixin implements ICompositeWidget {
-    @Shadow(remap = false) public abstract Rect2i getBounds();
-    @Shadow(remap = false) private Point position;
+    @Shadow public abstract Rect2i getBounds();
+    @Shadow private Point position;
 
-    @Shadow(remap = false) @Final private static int MARGIN;
-    @Shadow(remap = false) @Final private List<Button> buttons;
-    @Shadow(remap = false) private Point screenOrigin;
-    @Shadow(remap = false) @Final private static int VERTICAL_SPACING;
-    @Shadow(remap = false) private Rect2i bounds;
+    @Shadow @Final private static int MARGIN;
+    @Shadow @Final private List<Button> buttons;
+    @Shadow private Point screenOrigin;
+    @Shadow @Final private static int VERTICAL_SPACING;
+    @Shadow private Rect2i bounds;
+    ResourceLocation rs = ResourceLocation.fromNamespaceAndPath(PatternBetter.MODID,"rightbar");
 
     @Unique
     boolean isRight = false;
@@ -28,12 +37,36 @@ public abstract class VerticalButtonBarMixin implements ICompositeWidget {
         isRight = right;
     }
 
+    /**
+     * @author
+     * @reason
+     */
+    @Overwrite
+    public void drawBackgroundLayer(GuiGraphics guiGraphics, Rect2i bounds, Point mouse) {
+        if (isRight){
+            guiGraphics.blitSprite(
+                    rs,
+                    bounds.getX() + this.getBounds().getX() +this.getBounds().getWidth() , // 修改X坐标计算
+                    bounds.getY() + this.getBounds().getY() - 1,
+                    1,
+                    this.getBounds().getWidth() + 1,
+                    this.getBounds().getHeight() + 4);
+        }else {
+            guiGraphics.blitSprite(
+                    AppEng.makeId("vertical_buttons_bg"),
+                    bounds.getX() + this.getBounds().getX() - 2,
+                    bounds.getY() + this.getBounds().getY() - 1,
+                    1,
+                    this.getBounds().getWidth() + 1,
+                    this.getBounds().getHeight() + 4);
+        }
+    }
 
     /**
-     * @author xiaopiao
-     * @reason add right toolbar
+     * @author
+     * @reason
      */
-    @Overwrite(remap = false)
+    @Overwrite
     public void updateBeforeRender() {
         int currentY = position.getY() + MARGIN;
         int maxWidth = 0;
@@ -42,6 +75,7 @@ public abstract class VerticalButtonBarMixin implements ICompositeWidget {
             if (!button.visible) {
                 continue;
             }
+
 
             if (isRight){
                 button.setX(screenOrigin.getX() + position.getX() - MARGIN - button.getWidth() + getBounds().getWidth());
@@ -67,5 +101,4 @@ public abstract class VerticalButtonBarMixin implements ICompositeWidget {
                     currentY - boundY);
         }
     }
-
 }

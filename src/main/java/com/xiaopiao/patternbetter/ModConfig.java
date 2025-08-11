@@ -1,33 +1,30 @@
 package com.xiaopiao.patternbetter;
 
-import net.minecraftforge.common.ForgeConfigSpec;
-import net.minecraftforge.eventbus.api.SubscribeEvent;
-import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.fml.event.config.ModConfigEvent;
 
-@Mod.EventBusSubscriber(modid = PatternBetter.MODID, bus = Mod.EventBusSubscriber.Bus.MOD)
+import net.neoforged.bus.api.SubscribeEvent;
+import net.neoforged.fml.common.EventBusSubscriber;
+import net.neoforged.fml.event.config.ModConfigEvent;
+import net.neoforged.neoforge.common.ModConfigSpec;
+
+@EventBusSubscriber(modid = PatternBetter.MODID)
 public class ModConfig {
 
-    protected static ForgeConfigSpec.Builder BUILDER = new ForgeConfigSpec.Builder();
+    private static ModConfigSpec.Builder BUILDER = new ModConfigSpec.Builder();
 
-    protected static ForgeConfigSpec.IntValue SLOT_VALUE = BUILDER.defineInRange(
-            "slotvalue",36,0,Integer.MAX_VALUE);
+    private static ModConfigSpec.IntValue SLOT_VALUE = BUILDER
+            .comment("the number of slot")
+            .defineInRange("slotvalue",36,0,Integer.MAX_VALUE);
 
-    protected static ForgeConfigSpec.BooleanValue PAGE_BUTTON = BUILDER
-            .comment("Whether to turn on the new button style")
+    private static ModConfigSpec.BooleanValue PAGE_BUTTON = BUILDER
             .define("pagebutton",true);
 
-
-    protected static ForgeConfigSpec.BooleanValue JUMP_BOX = BUILDER
-            .comment("Whether to turn on the jump box")
+    private static ModConfigSpec.BooleanValue JUMP_BOX = BUILDER
             .define("jumpbox",true);
 
-    protected static ForgeConfigSpec.BooleanValue PATTERNS_INTO = BUILDER
-            .comment("Whether to turn on the Quick Put patterns button")
+    private static ModConfigSpec.BooleanValue PATTERNS_INTO = BUILDER
             .define("patternsinto",true);
 
-
-    public static final ForgeConfigSpec CONFIG = BUILDER.build();
+    public static final ModConfigSpec CONFIG = BUILDER.build();
 
     public static int slotValue;
     public static boolean pageButton;
