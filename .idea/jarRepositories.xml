@@ -12,29 +12,34 @@
       <option name="url" value="https://repository.jboss.org/nexus/content/repositories/public/" />
     </remote-repository>
     <remote-repository>
-      <option name="id" value="Mojang Meta" />
-      <option name="name" value="Mojang Meta" />
-      <option name="url" value="https://maven.neoforged.net/mojang-meta/" />
+      <option name="id" value="Modrinth" />
+      <option name="name" value="Modrinth" />
+      <option name="url" value="https://api.modrinth.com/maven" />
     </remote-repository>
     <remote-repository>
-      <option name="id" value="Mojang Minecraft Libraries" />
-      <option name="name" value="Mojang Minecraft Libraries" />
-      <option name="url" value="https://libraries.minecraft.net/" />
+      <option name="id" value="MavenLocal" />
+      <option name="name" value="MavenLocal" />
+      <option name="url" value="file:/$MAVEN_REPOSITORY$/" />
     </remote-repository>
     <remote-repository>
-      <option name="id" value="NeoForged Releases" />
-      <option name="name" value="NeoForged Releases" />
-      <option name="url" value="https://maven.neoforged.net/releases/" />
+      <option name="id" value="MavenRepo" />
+      <option name="name" value="MavenRepo" />
+      <option name="url" value="https://repo.maven.apache.org/maven2/" />
     </remote-repository>
     <remote-repository>
-      <option name="id" value="TerraformersMC" />
-      <option name="name" value="TerraformersMC" />
-      <option name="url" value="https://maven.terraformersmc.com/" />
+      <option name="id" value="maven" />
+      <option name="name" value="maven" />
+      <option name="url" value="https://cursemaven.com" />
     </remote-repository>
     <remote-repository>
-      <option name="id" value="cursemaven" />
-      <option name="name" value="cursemaven" />
-      <option name="url" value="https://www.cursemaven.com" />
+      <option name="id" value="maven2" />
+      <option name="name" value="maven2" />
+      <option name="url" value="https://maven.blamejared.com/" />
+    </remote-repository>
+    <remote-repository>
+      <option name="id" value="maven3" />
+      <option name="name" value="maven3" />
+      <option name="url" value="https://dvs1.progwml6.com/files/maven/" />
     </remote-repository>
     <remote-repository>
       <option name="id" value="Modmaven" />
@@ -42,19 +47,19 @@
       <option name="url" value="https://modmaven.dev/" />
     </remote-repository>
     <remote-repository>
-      <option name="id" value="maven" />
-      <option name="name" value="maven" />
+      <option name="id" value="maven4" />
+      <option name="name" value="maven4" />
       <option name="url" value="https://maven.shedaniel.me/" />
     </remote-repository>
     <remote-repository>
-      <option name="id" value="maven2" />
-      <option name="name" value="maven2" />
-      <option name="url" value="https://maven.saps.dev/minecraft" />
+      <option name="id" value="maven5" />
+      <option name="name" value="maven5" />
+      <option name="url" value="https://maven.minecraftforge.net/" />
     </remote-repository>
     <remote-repository>
-      <option name="id" value="MavenRepo" />
-      <option name="name" value="MavenRepo" />
-      <option name="url" value="https://repo.maven.apache.org/maven2/" />
+      <option name="id" value="maven6" />
+      <option name="name" value="maven6" />
+      <option name="url" value="https://libraries.minecraft.net/" />
     </remote-repository>
   </component>
 </project>
