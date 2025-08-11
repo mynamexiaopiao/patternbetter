@@ -3,12 +3,8 @@ package com.xiaopiao.patternbetter.mixin;
 import appeng.client.Point;
 import appeng.client.gui.ICompositeWidget;
 import appeng.client.gui.widgets.VerticalButtonBar;
-import appeng.core.AppEng;
-import com.xiaopiao.patternbetter.PatternBetter;
-import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.renderer.Rect2i;
-import net.minecraft.resources.ResourceLocation;
 import org.spongepowered.asm.mixin.*;
 
 import java.util.List;
@@ -34,8 +30,8 @@ public abstract class VerticalButtonBarMixin implements ICompositeWidget {
 
 
     /**
-     * @author
-     * @reason
+     * @author xiaopiao
+     * @reason add right toolbar
      */
     @Overwrite(remap = false)
     public void updateBeforeRender() {
@@ -71,14 +67,5 @@ public abstract class VerticalButtonBarMixin implements ICompositeWidget {
                     currentY - boundY);
         }
     }
-
-//    @Inject(method = "setPosition" , at = @At("HEAD") , cancellable = true)
-//    public void setPosition(Point position, CallbackInfo ci){
-//        if (isRight){
-//            this.position = new Point(position.getX() + getBounds().getWidth(), position.getY());
-//            ci.cancel();
-//        }
-//
-//    }
 
 }

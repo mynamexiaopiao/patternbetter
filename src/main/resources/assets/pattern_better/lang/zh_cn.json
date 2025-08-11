@@ -1,3 +1,9 @@
 {
-  "gui.pattern_provider.page": "页数"
+  "gui.pattern_provider.page": "页数",
+  "gui.pattern_provider.prev_page": "上一页",
+  "gui.pattern_provider.next_page": "下一页",
+  "patternbetter.configuration.slotvalue": "me拓展样板供应器槽位数量",
+  "patternbetter.configuration.pagebutton": "是否开启新版按钮样式",
+  "patternbetter.configuration.jumpbox": "是否开启跳转框",
+  "patternbetter.configuration.patternsinto": "是否开启快速放入样板按钮"
 }

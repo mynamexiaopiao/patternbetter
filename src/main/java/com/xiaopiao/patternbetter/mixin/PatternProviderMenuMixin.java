@@ -23,7 +23,7 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
-import java.util.Arrays;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Consumer;
@@ -49,7 +49,34 @@ public abstract class PatternProviderMenuMixin extends AEBaseMenu {
         this.actionMap.put("divide5", (paras) -> multiply2(true , 5));
         this.actionMap.put("multiply10", (paras) -> multiply2(false , 10));
         this.actionMap.put("divide10", (paras) -> multiply2(true , 10));
+        this.actionMap.put("patternsInto" ,(paras) -> patternsInto());
     }
+    @Unique
+    public void patternsInto(){
+        List<Slot> playerSlots = this.getSlots(SlotSemantics.PLAYER_INVENTORY);
+        List<Slot> patternSlots = this.getSlots(SlotSemantics.ENCODED_PATTERN);
+
+        // 1. 遍历玩家背包，收集所有样板
+        List<ItemStack> patternsToMove = new ArrayList<>();
+        for (Slot slot : playerSlots) {
+            ItemStack item = slot.getItem();
+            if (PatternDetailsHelper.isEncodedPattern(item)) {
+                patternsToMove.add(item.copy()); // 避免直接修改原物品
+                slot.set(ItemStack.EMPTY); // 清空玩家背包中的样板
+            }
+        }
+
+        // 2. 将样板填充到供应器的空位
+        int patternIndex = 0;
+        for (Slot patternSlot : patternSlots) {
+            if (patternSlot.getItem().isEmpty() && patternIndex < patternsToMove.size()) {
+                patternSlot.set(patternsToMove.get(patternIndex));
+                patternIndex++;
+            }
+        }
+
+    }
+
     @Unique
     public void multiply2(boolean is , int i){
         List<Slot> slots = (this).getSlots(SlotSemantics.ENCODED_PATTERN);
@@ -76,7 +103,7 @@ public abstract class PatternProviderMenuMixin extends AEBaseMenu {
     }
 
 
-
+    @Unique
     private void modifyStacks(GenericStack[] input, GenericStack[] mulInput,int scale, boolean div) {
         for(int i = 0; i < input.length; ++i) {
             if (input[i] != null ) {
@@ -86,6 +113,7 @@ public abstract class PatternProviderMenuMixin extends AEBaseMenu {
         }
     }
 
+    @Unique
     private static boolean hasStackWithCountOne(GenericStack[] stacks, int i) {
         for (GenericStack stack : stacks) {
             if (stack != null && (stack.amount() % i != 0  || stack.amount() /i <0)) {

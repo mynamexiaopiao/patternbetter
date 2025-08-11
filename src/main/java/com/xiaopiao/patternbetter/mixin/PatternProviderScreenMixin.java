@@ -8,6 +8,7 @@ import appeng.menu.implementations.PatternProviderMenu;
 import com.glodblock.github.extendedae.client.button.ActionEPPButton;
 import com.glodblock.github.extendedae.network.EPPNetworkHandler;
 import com.glodblock.github.glodium.network.packet.CGenericPacket;
+import com.xiaopiao.patternbetter.ModConfig;
 import com.xiaopiao.patternbetter.NewIcon;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Inventory;
@@ -40,17 +41,14 @@ public class PatternProviderScreenMixin<C extends PatternProviderMenu> extends A
 
 
 
-//        this.addToLeftToolbar(multiply2);
-//        this.addToLeftToolbar(divide2);
-//        this.addToLeftToolbar(multiply5);
-//        this.addToLeftToolbar(divide5);
-//        this.addToLeftToolbar(multiply10);
-//        this.addToLeftToolbar(divide10);
-
         Class<? extends VerticalButtonBar> aClass = rightToolbar.getClass();
         Method setRight = aClass.getMethod("setRight" , boolean.class);
         setRight.invoke(rightToolbar , true);
 
+        if (ModConfig.patternsInto){
+            ActionEPPButton patternsInto = new ActionEPPButton((b) -> EPPNetworkHandler.INSTANCE.sendToServer(new CGenericPacket("patternsInto")), NewIcon.PATTERNSINTO);
+            this.addToLeftToolbar(patternsInto);
+        }
 
         rightToolbar.add(divide2);
         rightToolbar.add(multiply2);
@@ -60,5 +58,7 @@ public class PatternProviderScreenMixin<C extends PatternProviderMenu> extends A
         rightToolbar.add(multiply10);
 
         this.widgets.add("rightBar", rightToolbar);
+
+
     }
 }

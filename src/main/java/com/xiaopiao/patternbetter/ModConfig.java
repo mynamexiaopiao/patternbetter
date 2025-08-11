@@ -8,16 +8,37 @@ import net.minecraftforge.fml.event.config.ModConfigEvent;
 @Mod.EventBusSubscriber(modid = PatternBetter.MODID, bus = Mod.EventBusSubscriber.Bus.MOD)
 public class ModConfig {
 
-    private static ForgeConfigSpec.Builder BUILDER = new ForgeConfigSpec.Builder();
+    protected static ForgeConfigSpec.Builder BUILDER = new ForgeConfigSpec.Builder();
 
-    private static ForgeConfigSpec.IntValue SLOT_VALUE = BUILDER.defineInRange("slotvalue",36,0,Integer.MAX_VALUE);
+    protected static ForgeConfigSpec.IntValue SLOT_VALUE = BUILDER.defineInRange(
+            "slotvalue",36,0,Integer.MAX_VALUE);
+
+    protected static ForgeConfigSpec.BooleanValue PAGE_BUTTON = BUILDER
+            .comment("Whether to turn on the new button style")
+            .define("pagebutton",true);
+
+
+    protected static ForgeConfigSpec.BooleanValue JUMP_BOX = BUILDER
+            .comment("Whether to turn on the jump box")
+            .define("jumpbox",true);
+
+    protected static ForgeConfigSpec.BooleanValue PATTERNS_INTO = BUILDER
+            .comment("Whether to turn on the Quick Put patterns button")
+            .define("patternsinto",true);
+
 
     public static final ForgeConfigSpec CONFIG = BUILDER.build();
 
     public static int slotValue;
+    public static boolean pageButton;
+    public static boolean jumpBox;
+    public static boolean patternsInto;
 
     public static void getConfig() {
         slotValue = SLOT_VALUE.get();
+        pageButton = PAGE_BUTTON.get();
+        jumpBox = JUMP_BOX.get();
+        patternsInto = PATTERNS_INTO.get();
     }
 
     @SubscribeEvent

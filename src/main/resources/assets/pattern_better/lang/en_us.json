@@ -1,3 +1,9 @@
 {
-  "gui.pattern_provider.page": "Page"
+  "gui.pattern_provider.page": "Page",
+  "gui.pattern_provider.prev_page": "the prev page",
+  "gui.pattern_provider.next_page": "the next page",
+  "patternbetter.configuration.slotvalue": "the number of expattern slots",
+  "patternbetter.configuration.pagebutton": "Whether to turn on the new button style",
+  "patternbetter.configuration.jumpbox": "Whether to turn on the jump box",
+  "patternbetter.configuration.patternsinto": "Whether to turn on the Quick Put patterns button"
 }

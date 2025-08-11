@@ -70,6 +70,12 @@ public abstract class ContainerExPatternProviderMixin extends PatternProviderMen
     }
     @Unique
     public void aebetter$setPage(int page){
-        this.page = page;
+        if (page < 0 ){
+            this.page = this.maxPage - 1;
+        }else if (page >= this.maxPage){
+            this.page = 0;
+        } else {
+            this.page = page;
+        }
     }
 }
