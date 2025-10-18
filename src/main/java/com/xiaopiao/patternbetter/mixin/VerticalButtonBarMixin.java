@@ -7,6 +7,7 @@ import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.renderer.Rect2i;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
+import net.minecraftforge.fml.ModList;
 import org.spongepowered.asm.mixin.*;
 
 import java.util.List;
@@ -47,11 +48,11 @@ public abstract class VerticalButtonBarMixin implements ICompositeWidget {
 
             if (isRight){
                 button.setX(screenOrigin.getX() + position.getX() - MARGIN - button.getWidth() + getBounds().getWidth());
+                button.setY(screenOrigin.getY() + currentY + (ModList.get().isLoaded("appflux") || ModList.get().isLoaded("expandedae") ? 30 : 0));
             }else {
                 button.setX(screenOrigin.getX() + position.getX() - MARGIN - button.getWidth());
+                button.setY(screenOrigin.getY() + currentY);
             }
-
-            button.setY(screenOrigin.getY() + currentY);
 
             currentY += button.getHeight() + VERTICAL_SPACING;
             maxWidth = Math.max(button.getWidth(), maxWidth);
