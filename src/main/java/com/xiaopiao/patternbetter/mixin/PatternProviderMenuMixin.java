@@ -3,12 +3,12 @@ package com.xiaopiao.patternbetter.mixin;
 import appeng.api.crafting.IPatternDetails;
 import appeng.api.crafting.PatternDetailsHelper;
 import appeng.api.stacks.GenericStack;
-import appeng.crafting.pattern.AECraftingPattern;
 import appeng.crafting.pattern.AEProcessingPattern;
 import appeng.helpers.patternprovider.PatternProviderLogicHost;
 import appeng.menu.AEBaseMenu;
 import appeng.menu.SlotSemantics;
 import appeng.menu.implementations.PatternProviderMenu;
+import com.glodblock.github.extendedae.container.ContainerExPatternProvider;
 import com.glodblock.github.glodium.network.packet.sync.ActionMap;
 import com.glodblock.github.glodium.network.packet.sync.IActionHolder;
 import net.minecraft.world.entity.player.Inventory;
@@ -24,16 +24,22 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
+import java.lang.reflect.Field;
+import java.util.*;
 
 @Mixin(value =  PatternProviderMenu.class)
 @Implements(@Interface(iface = IActionHolder.class, prefix = "IActionHolder$"))
 public class PatternProviderMenuMixin extends AEBaseMenu {
 
     @Unique
-    public ActionMap actionMap = ActionMap.create();
+    private ActionMap actionMap = ActionMap.create();
+
+    @Unique
+    ContainerExPatternProvider provider;
+
+    @Unique
+    private int playerSlotCount;
+
 
     public PatternProviderMenuMixin(MenuType<?> menuType, int id, Inventory playerInventory, Object host) {
         super(menuType, id, playerInventory, host);
@@ -41,6 +47,8 @@ public class PatternProviderMenuMixin extends AEBaseMenu {
 
     @Inject(method = "<init>", at = @At("TAIL"),remap = false)
     public void init(MenuType menuType, int id, Inventory playerInventory, PatternProviderLogicHost host, CallbackInfo ci){
+        List<Slot> playerSlots = (this).getSlots(SlotSemantics.PLAYER_INVENTORY);
+        this.playerSlotCount = playerSlots.size();
 
         this.actionMap.put("multiply2", (paras) -> multiply2(false,2));
         this.actionMap.put("divide2", (paras) -> multiply2(true ,2));
@@ -49,6 +57,30 @@ public class PatternProviderMenuMixin extends AEBaseMenu {
         this.actionMap.put("multiply10", (paras) -> multiply2(false , 10));
         this.actionMap.put("divide10", (paras) -> multiply2(true , 10));
         this.actionMap.put("patternsInto" ,(paras) -> patternsInto());
+        this.actionMap.put("balance", (paras) -> balanceMultiply());
+
+
+        if ((PatternProviderMenu)(Object)this instanceof ContainerExPatternProvider p){
+            provider = p;
+        }
+
+    }
+
+    @Unique
+    public boolean getEdit(int slotIndex) {
+        try {
+            if (provider == null)throw new RuntimeException("ContainerExPatternProvider is null");
+
+            Class<? extends ContainerExPatternProvider> aClass = provider.getClass();
+
+            Field field = aClass.getDeclaredField("allSlotStates");
+
+            BitSet o = (BitSet)field.get(provider);
+
+            return o.get(slotIndex - 36);
+        } catch (IllegalAccessException | NoSuchFieldException e) {
+            throw new RuntimeException(e);
+        }
     }
 
 
@@ -78,31 +110,111 @@ public class PatternProviderMenuMixin extends AEBaseMenu {
 
     }
 
+    @Unique
+    public void balanceMultiply(){
+        List<Slot> slots = (this).getSlots(SlotSemantics.ENCODED_PATTERN);
 
+        List<Long> GBCs = new ArrayList<>();
 
+        for (Slot slot : slots){
+            ItemStack stack = slot.getItem();
+            IPatternDetails detail = PatternDetailsHelper.decodePattern(stack, (this).getPlayer().level());
+            if (detail instanceof AEProcessingPattern process){
+                GenericStack[] input = (GenericStack[])process.getSparseInputs().toArray(new GenericStack[0]);
+                GenericStack[] output = (GenericStack[])process.getOutputs().toArray(new GenericStack[0]);
+                List<GenericStack> inputs = new ArrayList<>();
+                //将数组内容添加
+                inputs.addAll(Arrays.asList(input));
+                inputs.addAll(Arrays.asList(output));
+
+                //过滤数量小于1的并转化为long[]
+                long[] inputAmount = inputs.stream().filter(Objects::nonNull).filter(stack1 -> stack1.amount() > 0).mapToLong(GenericStack::amount).toArray();
+
+                long l = gcdOfArray(inputAmount);
+
+                //所有同除最大公约数 stream
+                GenericStack[] mulInput = Arrays.stream(input).filter(Objects::nonNull).map(stack1 -> new GenericStack(stack1.what(), stack1.amount() / l)).toArray(GenericStack[]::new);
+                GenericStack[] mulOutput = Arrays.stream(output).filter(Objects::nonNull).map(stack1 -> new GenericStack(stack1.what(), stack1.amount() / l)).toArray(GenericStack[]::new);
+
+                ItemStack newPattern = PatternDetailsHelper.encodeProcessingPattern(Arrays.stream(mulInput).toList(), Arrays.stream(mulOutput).toList());
+                slot.set(newPattern);
+                GBCs.add(l);
+            }
+        }
+
+        //寻找最大的数
+        long maxGCD = GBCs.stream().max(Long::compareTo).orElse(1L);
+
+        multiply2(false, (int) maxGCD);
+    }
+
+    // 计算两个数的最大公约数（GCD）
+    @Unique
+    public long gcd(long a, long b) {
+        while (b != 0) {
+            long temp = b;
+            b = a % b;
+            a = temp;
+        }
+        return a;
+    }
+    // 计算 N 个数的 GCD
+    @Unique
+    public long gcdOfArray(long[] numbers) {
+        if (numbers.length == 0) return 1;
+        long currentGcd = numbers[0];
+        for (long i = 1; i < numbers.length; i++) {
+            currentGcd = gcd(currentGcd, numbers[Math.toIntExact(i)]);
+            if (currentGcd == 1) break; // 提前终止，因为 GCD 不可能小于 1
+        }
+        return currentGcd;
+    }
 
     @Unique
     public void multiply2(boolean is , int i){
         List<Slot> slots = (this).getSlots(SlotSemantics.ENCODED_PATTERN);
         for (Slot slot : slots) {
-            ItemStack stack = slot.getItem();
-            IPatternDetails detail = PatternDetailsHelper.decodePattern(stack, (this).getPlayer().level());
-            if (detail instanceof AEProcessingPattern process) {
-                GenericStack[] input = (GenericStack[])process.getSparseInputs().toArray(new GenericStack[0]);
-                GenericStack[] output = (GenericStack[])process.getOutputs().toArray(new GenericStack[0]);
-                GenericStack[] mulInput = new GenericStack[input.length];
-                GenericStack[] mulOutput = new GenericStack[output.length];
+            if (provider == null){
+                ItemStack stack = slot.getItem();
+                IPatternDetails detail = PatternDetailsHelper.decodePattern(stack, (this).getPlayer().level());
+                if (detail instanceof AEProcessingPattern process) {
+                    GenericStack[] input = (GenericStack[])process.getSparseInputs().toArray(new GenericStack[0]);
+                    GenericStack[] output = (GenericStack[])process.getOutputs().toArray(new GenericStack[0]);
+                    GenericStack[] mulInput = new GenericStack[input.length];
+                    GenericStack[] mulOutput = new GenericStack[output.length];
 
 
-                if ((hasStackWithCountOne( input , i) || hasStackWithCountOne(output, i)) && is)continue;
+                    if ((hasStackWithCountOne( input , i) || hasStackWithCountOne(output, i)) && is)continue;
 
-                modifyStacks(input,  mulInput, i, is);
-                modifyStacks(output, mulOutput, i, is);
+                    modifyStacks(input,  mulInput, i, is);
+                    modifyStacks(output, mulOutput, i, is);
 
-                ItemStack newPattern = PatternDetailsHelper.encodeProcessingPattern(Arrays.stream(mulInput).toList(), Arrays.stream(mulOutput).toList());
-                slot.set(newPattern);
+                    ItemStack newPattern = PatternDetailsHelper.encodeProcessingPattern(Arrays.stream(mulInput).toList(), Arrays.stream(mulOutput).toList());
+                    slot.set(newPattern);
 
+                }
+            }else if (getEdit(slot.index)){
+                ItemStack stack = slot.getItem();
+                IPatternDetails detail = PatternDetailsHelper.decodePattern(stack, (this).getPlayer().level());
+                if (detail instanceof AEProcessingPattern process) {
+                    GenericStack[] input = (GenericStack[])process.getSparseInputs().toArray(new GenericStack[0]);
+                    GenericStack[] output = (GenericStack[])process.getOutputs().toArray(new GenericStack[0]);
+                    GenericStack[] mulInput = new GenericStack[input.length];
+                    GenericStack[] mulOutput = new GenericStack[output.length];
+
+
+                    if ((hasStackWithCountOne( input , i) || hasStackWithCountOne(output, i)) && is)continue;
+
+                    modifyStacks(input,  mulInput, i, is);
+                    modifyStacks(output, mulOutput, i, is);
+
+                    ItemStack newPattern = PatternDetailsHelper.encodeProcessingPattern(Arrays.stream(mulInput).toList(), Arrays.stream(mulOutput).toList());
+                    slot.set(newPattern);
+
+                }
             }
+
+
         }
     }
 
@@ -129,4 +241,6 @@ public class PatternProviderMenuMixin extends AEBaseMenu {
     public @NotNull ActionMap IActionHolder$getActionMap(){
         return this.actionMap;
     }
+
+
 }

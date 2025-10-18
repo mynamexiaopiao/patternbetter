@@ -5,7 +5,6 @@ import appeng.client.gui.Icon;
 import appeng.client.gui.style.Blitter;
 import appeng.client.gui.widgets.IconButton;
 import com.glodblock.github.extendedae.client.button.EPPButton;
-import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.world.item.Item;
@@ -13,9 +12,6 @@ import net.minecraft.world.item.ItemStack;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Overwrite;
 import org.spongepowered.asm.mixin.Shadow;
-import org.spongepowered.asm.mixin.injection.At;
-import org.spongepowered.asm.mixin.injection.Inject;
-import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 @Mixin(EPPButton.class)
 public abstract class EPPButtonMixin extends IconButton {
@@ -27,8 +23,8 @@ public abstract class EPPButtonMixin extends IconButton {
     }
 
     /**
-     * @author
-     * @reason
+     * @author xiaopiao
+     * @reason 修复extendae的half错误
      */
     @Overwrite
     public void renderWidget(GuiGraphics guiGraphics, int mouseX, int mouseY, float partial) {

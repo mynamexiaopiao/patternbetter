@@ -2,14 +2,12 @@ package com.xiaopiao.patternbetter.mixin;
 
 
 import appeng.blockentity.crafting.PatternProviderBlockEntity;
-import appeng.helpers.patternprovider.PatternProviderLogic;
 import com.glodblock.github.extendedae.common.tileentities.TileExPatternProvider;
 import com.xiaopiao.patternbetter.ModConfig;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.Overwrite;
 import org.spongepowered.asm.mixin.injection.Constant;
 import org.spongepowered.asm.mixin.injection.ModifyConstant;
 

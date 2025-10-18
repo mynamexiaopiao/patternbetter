@@ -2,10 +2,6 @@
   "$schema": "../schema.json",
   "includes": ["palette.json"],
   "widgets": {
-    "verticalToolbar": {
-      "left": 3,
-      "top": 1
-    },
     "rightBar": {
       "right": 2,
       "top": 1
@@ -28,6 +24,18 @@
       "top": 18,
       "width": 80,
       "height": 9
+    },
+    "reverseAll": {
+      "left": 120,
+      "top": 18
+    },
+    "reverseThisPage" : {
+      "left": 130,
+      "top": 18
+    },
+    "verticalToolbar": {
+      "left": 3,
+      "top": 1
     }
   }
 }

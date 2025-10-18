@@ -4,6 +4,16 @@
   "patternbetter.configuration.pagebutton": "Whether to turn on the new button style",
   "patternbetter.configuration.jumpbox": "Whether to turn on the jump box",
   "patternbetter.configuration.patternsinto": "Whether to turn on the Quick Put patterns button",
+  "patternbetter.configuration.editmode": "Whether to turn on the Eidt mode",
+  "patternbetter.configuration.balancemode": "Whether to turn on the balance button",
   "gui.pattern_provider.prev_page": "the prev page",
-  "gui.pattern_provider.next_page": "the next page"
+  "gui.pattern_provider.next_page": "the next page",
+  "gui.patternbetter.button.editon": "Turn on editing",
+  "gui.patternbetter.button.editoff": "Turn off editing",
+  "gui.patternbetter.button.reverseAll": "Reverse all states",
+  "gui.patternbetter.button.reverseThisPage": "Reverse the state of this page",
+  "gui.patternbetter.balance": "Balance patterns multiples",
+  "gui.patternbetter.balance.tooltip": "Find the maximum multiplier in the supplier of the patterns to balance so the multiplier of the patterns",
+  "gui.patternbetter.patternsInto": "Upload patterns",
+  "gui.patternbetter.patternsInto.tooltip": "Upload all the patterns in your backpack to the provide"
 }

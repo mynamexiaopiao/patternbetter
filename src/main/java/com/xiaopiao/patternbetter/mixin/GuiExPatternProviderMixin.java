@@ -7,21 +7,33 @@ import appeng.client.gui.style.PaletteColor;
 import appeng.client.gui.style.ScreenStyle;
 import appeng.client.gui.widgets.AETextField;
 import appeng.menu.SlotSemantics;
+import appeng.menu.implementations.PatternProviderMenu;
 import com.glodblock.github.extendedae.api.IPage;
 import com.glodblock.github.extendedae.client.button.ActionEPPButton;
+import com.glodblock.github.extendedae.client.button.CycleEPPButton;
 import com.glodblock.github.extendedae.client.gui.GuiExPatternProvider;
 import com.glodblock.github.extendedae.container.ContainerExPatternProvider;
 import com.glodblock.github.extendedae.network.EAENetworkHandler;
+import com.glodblock.github.extendedae.network.packet.CEAEGenericPacket;
 import com.glodblock.github.extendedae.network.packet.CUpdatePage;
+import com.glodblock.github.glodium.network.packet.sync.ActionMap;
+import com.glodblock.github.glodium.network.packet.sync.IActionHolder;
+import com.xiaopiao.patternbetter.EditMode;
 import com.xiaopiao.patternbetter.ModConfig;
+import com.xiaopiao.patternbetter.NewIcon;
+import com.xiaopiao.patternbetter.PatternBetter;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.ComponentPath;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Tooltip;
 import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.world.inventory.Slot;
 import org.jetbrains.annotations.NotNull;
+import org.spongepowered.asm.mixin.Implements;
+import org.spongepowered.asm.mixin.Interface;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
@@ -31,22 +43,36 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.util.List;
 
 @Mixin(GuiExPatternProvider.class)
+@Implements(@Interface(iface = IActionHolder.class, prefix = "IActionHolder$"))
 public abstract class GuiExPatternProviderMixin extends PatternProviderScreen<ContainerExPatternProvider> {
 
     @Unique
-    private static int iPage = 0;
+    private  int iPage = 0; //当前页数
     @Unique
-    private static int maxPage = 0;
+    private  int maxPage = 0; //最大页数
     @Unique
     private ActionEPPButton nextPage;
     @Unique
     private ActionEPPButton prevPage;
     @Unique
+    ActionEPPButton reverseAll;
+    @Unique
+    ActionEPPButton reverseThisPage;
+    @Unique
     private AETextField numberInputField;
     @Unique
-    private String numberInput;
+    private String numberInput; //页码输入框内容
+    @Unique
+    CycleEPPButton doubleModeButton; //双模式切换按钮
+    @Unique
+    private final ActionMap actionMap = ActionMap.create();
+    @Unique
+    private static final ResourceLocation CHECK = ResourceLocation.fromNamespaceAndPath(PatternBetter.MODID, "textures/gui/1.png");
+    @Unique
+    private static final ResourceLocation CHECK1 = ResourceLocation.fromNamespaceAndPath(PatternBetter.MODID, "textures/gui/2.png");
 
     public GuiExPatternProviderMixin(ContainerExPatternProvider menu, Inventory playerInventory, Component title, ScreenStyle style) {
         super(menu, playerInventory, title, style);
@@ -57,6 +83,7 @@ public abstract class GuiExPatternProviderMixin extends PatternProviderScreen<Co
     public void render(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTicks){
         super.render(guiGraphics, mouseX, mouseY, partialTicks);
         int maxSlots = this.getMenu().getSlots(SlotSemantics.ENCODED_PATTERN).size();
+        //文本渲染
         if (maxSlots>36){
             Font fontRenderer = Minecraft.getInstance().font;
 
@@ -66,8 +93,30 @@ public abstract class GuiExPatternProviderMixin extends PatternProviderScreen<Co
 
             //获取ae通用界面样式
             int color = style.getColor(PaletteColor.DEFAULT_TEXT_COLOR).toARGB();
-            guiGraphics.drawString(font, Component.translatable("gui.pattern_provider.page").append(": "+(iPage + 1))
+            guiGraphics.drawString(font, Component.translatable("gui.pattern_provider.page").append(": "+(iPage + 1)).append("/"+(maxPage ))
                     , leftPos+ textWidth +imageWidth/10, topPos + imageHeight/5-18,color,false);
+        }
+        //编辑模式符号渲染
+        if (getDoubleMode() == EditMode.EDITON){
+            List<Slot> patternSlots = this.getMenu().getSlots(SlotSemantics.ENCODED_PATTERN);
+            for (Slot slot : patternSlots) {
+                if (!slot.getItem().isEmpty()) {
+                    if(this.iPage + 1 == (slot.index ) /36){
+                        int sx = this.leftPos + slot.x;
+                        int sy = this.topPos + slot.y;
+                        int iconW = 8; // 你贴图的宽度
+                        int iconH = 8; // 高度
+                        int iconX = sx + 18 - iconW ;
+
+                        //查看槽位数据以显示编辑模式不同状态
+                        if (getSlotData(slot.index)){
+                            guiGraphics.blit(CHECK, iconX, sy, 350,0, 0, iconW, iconH, iconW, iconH);
+                        }else {
+                            guiGraphics.blit(CHECK1, iconX, sy, 350,0, 0, iconW, iconH, iconW, iconH);
+                        }
+                    }
+                }
+            }
         }
     }
 
@@ -77,6 +126,7 @@ public abstract class GuiExPatternProviderMixin extends PatternProviderScreen<Co
         super.updateBeforeRender();
         try {
             //反射获取page和maxPage
+            //显示设置
             ContainerExPatternProvider menu1 = this.getMenu();
 
             Class<? extends ContainerExPatternProvider> aClass = menu1.getClass();
@@ -100,6 +150,17 @@ public abstract class GuiExPatternProviderMixin extends PatternProviderScreen<Co
                 this.prevPage.setVisibility(false);
             }
 
+            //按钮
+            this.doubleModeButton.setState(getDoubleMode().ordinal());
+
+            if (getDoubleMode() == EditMode.EDITON){
+                reverseAll.setVisibility( true);
+                reverseThisPage.setVisibility( true);
+            }else {
+                reverseAll.setVisibility( false);
+                reverseThisPage.setVisibility( false);
+            }
+
         } catch (NoSuchMethodException | InvocationTargetException | IllegalAccessException | NoSuchFieldException e) {
             throw new RuntimeException(e);
         }
@@ -110,20 +171,20 @@ public abstract class GuiExPatternProviderMixin extends PatternProviderScreen<Co
     private void injectInit(ContainerExPatternProvider menu, Inventory playerInventory, Component title, ScreenStyle style, CallbackInfo ci) {
         ContainerExPatternProvider menu1 = this.getMenu();
 
+        //页码切换
         if (menu1 instanceof IPage page1){
             //前进后退按钮
             this.prevPage = new ActionEPPButton((b) -> EAENetworkHandler.INSTANCE.sendToServer(new CUpdatePage(() -> page1.getPage() - 1)), Icon.ARROW_LEFT);
             this.nextPage = new ActionEPPButton((b) -> EAENetworkHandler.INSTANCE.sendToServer(new CUpdatePage(() -> page1.getPage() + 1)), Icon.ARROW_RIGHT);
-
         }
 
         prevPage.setTooltip(Tooltip.create(Component.translatable("gui.pattern_provider.prev_page")));
         nextPage.setTooltip(Tooltip.create(Component.translatable("gui.pattern_provider.next_page")));
 
+        //页码按钮状态
         if (ModConfig.pageButton){
             nextPage.setHalfSize( true);
             prevPage.setHalfSize( true);
-
 
             this.widgets.add("nextPage", nextPage);
             this.widgets.add("prevPage", prevPage);
@@ -132,17 +193,44 @@ public abstract class GuiExPatternProviderMixin extends PatternProviderScreen<Co
             this.addToLeftToolbar(nextPage);
         }
 
+        //跳转框
         if (ModConfig.jumpBox){
             this.numberInputField = this.widgets.addTextField("numberInputField");
             this.numberInputField.setResponder(this::onlyNumber);
         }
 
+        //模式切换按钮
+        if (ModConfig.editMode){
+            this.doubleModeButton = new CycleEPPButton();
+            doubleModeButton.addActionPair(NewIcon.EDITOFF,Component.translatable("gui.patternbetter.button.editoff"),
+                    b -> EAENetworkHandler.INSTANCE.sendToServer(new CEAEGenericPacket("set" , EditMode.EDITOFF.ordinal())));
+            doubleModeButton.addActionPair(NewIcon.EDITON,Component.translatable("gui.patternbetter.button.editon"),
+                    b ->EAENetworkHandler.INSTANCE.sendToServer(new CEAEGenericPacket("set" , EditMode.EDITON.ordinal())));
+            this.addToLeftToolbar(doubleModeButton);
+        }
 
+
+
+        //翻转按钮
+         reverseAll = new ActionEPPButton(b -> EAENetworkHandler.INSTANCE.sendToServer(new CEAEGenericPacket("reverseAll")), NewIcon.REVERSEAll);
+         reverseThisPage = new ActionEPPButton(b -> EAENetworkHandler.INSTANCE.sendToServer(new CEAEGenericPacket("reverseThisPage")), NewIcon.REVERSETHISPAGE);
+
+         reverseAll.setHalfSize(true);
+         reverseThisPage.setHalfSize(true);
+
+         reverseAll.setMessage(Component.translatable("gui.patternbetter.button.reverseAll"));
+         reverseThisPage.setMessage(Component.translatable("gui.patternbetter.button.reverseThisPage"));
+
+         this.widgets.add("reverseAll", reverseAll);
+         this.widgets.add("reverseThisPage", reverseThisPage);
     }
 
+
+    /*
+    * 跳转框数字输入限定
+    */
     @Unique
     public void onlyNumber(String str){
-
         // 过滤只保留数字
         String filtered = str.replaceAll("[^0-9]", "");
 
@@ -193,6 +281,9 @@ public abstract class GuiExPatternProviderMixin extends PatternProviderScreen<Co
         this.setInitialFocus(numberInputField);
     }
 
+    /**
+     * 焦点改变时
+     */
     @Override
     protected void changeFocus(@NotNull ComponentPath path) {
         super.changeFocus(path);
@@ -209,12 +300,87 @@ public abstract class GuiExPatternProviderMixin extends PatternProviderScreen<Co
         }
     }
 
+
     @Override
-    public boolean mouseClicked(double x, double y, int btn) {
-        if (btn == 1 && this.numberInputField.isMouseOver(x, y)) {
+    public boolean mouseClicked(double mouseX, double mouseY, int btn) {
+        //输入框右键清空输入框
+        if (btn == 1 && this.numberInputField.isMouseOver(mouseX, mouseY)) {
             this.numberInputField.setValue("");
         }
-        return super.mouseClicked(x, y, btn);
+
+        //黑名单模式左键点击切换
+        if (btn == 0 && getDoubleMode() == EditMode.EDITON) { // 左键
+            List<Slot> patternSlots = this.getMenu().getSlots(SlotSemantics.ENCODED_PATTERN);
+            for (Slot slot : patternSlots) {
+                if (!slot.getItem().isEmpty()) {
+                    if (this.iPage +1 == slot.index /36){
+                        int sx = this.leftPos + slot.x;
+                        int sy = this.topPos + slot.y;
+
+                        // 槽位范围 18x18
+                        if (mouseX >= sx && mouseX < sx + 18 &&
+                                mouseY >= sy && mouseY < sy + 18) {
+
+                            boolean current = getSlotData(slot.index);
+                            boolean newState = !current;
+
+                            // 同步服务端
+                            SlotSendToServer(slot.index, newState);
+                            return true; // 阻止原本取物品的行为
+                        }
+                    }
+                }
+            }
+        }
+        return super.mouseClicked(mouseX, mouseY, btn);
     }
 
+
+    //发送数据到menu
+    @Unique
+    public void SlotSendToServer(int slotIndex , boolean is){
+        EAENetworkHandler.INSTANCE.sendToServer(new CEAEGenericPacket("upDoubleMode" , slotIndex, is));
+    }
+
+
+    //反射获取按钮模式
+    @Unique
+    public boolean getSlotData(int slot){
+
+        PatternProviderMenu menu1 = this.getMenu();
+
+        Class<? extends PatternProviderMenu> aClass = menu1.getClass();
+
+        try {
+            Method getMode = aClass.getMethod("getItemState" , int.class);
+
+            return (boolean) getMode.invoke(menu1 , slot);
+
+
+        } catch (NoSuchMethodException | InvocationTargetException | IllegalAccessException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    //反射获取按钮模式
+    @Unique
+    public EditMode getDoubleMode(){
+        PatternProviderMenu menu1 = this.getMenu();
+
+        Class<? extends PatternProviderMenu> aClass = menu1.getClass();
+
+        try {
+            Method getMode = aClass.getMethod("getMode");
+
+            return (EditMode)getMode.invoke(menu1);
+
+        } catch (NoSuchMethodException | InvocationTargetException | IllegalAccessException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    @Unique
+    public @NotNull ActionMap IActionHolder$getActionMap(){
+        return this.actionMap;
+    }
 }

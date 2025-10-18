@@ -153,7 +153,7 @@ dependencies {
     implementation "curse.maven:ex-pattern-provider-892005:6786438"
     implementation "curse.maven:glodium-957920:5821676"
     implementation "org.appliedenergistics:appliedenergistics2:19.2.8"
-    implementation "org.appliedenergistics:guideme:2.5.1"
+    implementation "org.appliedenergistics:guideme:21.1.14"
     // Example optional mod dependency with JEI
     // The JEI API is declared for compile time use, while the full JEI artifact is used at runtime
     // compileOnly "mezz.jei:jei-${mc_version}-common-api:${jei_version}"
