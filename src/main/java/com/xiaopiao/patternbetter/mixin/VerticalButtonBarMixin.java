@@ -10,6 +10,7 @@ import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.renderer.Rect2i;
 import net.minecraft.resources.ResourceLocation;
+import net.neoforged.fml.ModList;
 import org.spongepowered.asm.mixin.*;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
@@ -47,7 +48,7 @@ public abstract class VerticalButtonBarMixin implements ICompositeWidget {
             guiGraphics.blitSprite(
                     rs,
                     bounds.getX() + this.getBounds().getX() +this.getBounds().getWidth() , // 修改X坐标计算
-                    bounds.getY() + this.getBounds().getY() - 1,
+                    bounds.getY() + this.getBounds().getY() + (ModList.get().isLoaded("appflux") || ModList.get().isLoaded("expandedae") ? 29 : -1),
                     1,
                     this.getBounds().getWidth() + 1,
                     this.getBounds().getHeight() + 4);
@@ -79,11 +80,11 @@ public abstract class VerticalButtonBarMixin implements ICompositeWidget {
 
             if (isRight){
                 button.setX(screenOrigin.getX() + position.getX() - MARGIN - button.getWidth() + getBounds().getWidth());
+                button.setY(screenOrigin.getY() + currentY + (ModList.get().isLoaded("appflux") || ModList.get().isLoaded("expandedae") ? 30 : 0));
             }else {
                 button.setX(screenOrigin.getX() + position.getX() - MARGIN - button.getWidth());
+                button.setY(screenOrigin.getY() + currentY);
             }
-
-            button.setY(screenOrigin.getY() + currentY);
 
             currentY += button.getHeight() + VERTICAL_SPACING;
             maxWidth = Math.max(button.getWidth(), maxWidth);
