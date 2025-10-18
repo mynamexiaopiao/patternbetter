@@ -1,0 +1,16 @@
+JVM:         C:\Users\Administrator\.jdks\ms-17.0.15\bin\java.exe
+JVM Args:    
+Run Args:    "--task", "MERGE_MAPPING", "--left", "config/joined.tsrg", "--right", "D:\mod\expattern_better\build\fg_cache\mcp\1.20.1-20230612.114412\joined\c5b3b0d268a7cd3011759749524ead65d66e0665\downloadClientMappings\client_mappings.txt", "--right-names", "right,left", "--classes", "--output", "D:\mod\expattern_better\build\fg_cache\mcp\1.20.1-20230612.114412\joined\c5b3b0d268a7cd3011759749524ead65d66e0665\mergeMappings\output.jar"
+Classpath:   C:\Users\Administrator\.gradle\caches\forge_gradle\maven_downloader\net\minecraftforge\installertools\1.2.0\installertools-1.2.0-fatjar.jar
+Working Dir: D:\mod\expattern_better\build\fg_cache\mcp\1.20.1-20230612.114412\joined\c5b3b0d268a7cd3011759749524ead65d66e0665\mergeMappings
+Main Class:  net.minecraftforge.installertools.ConsoleTool
+Task: MERGE_MAPPING
+Left:    config\joined.tsrg
+         null
+Right:   D:\mod\expattern_better\build\fg_cache\mcp\1.20.1-20230612.114412\joined\c5b3b0d268a7cd3011759749524ead65d66e0665\downloadClientMappings\client_mappings.txt
+         right,left
+Classes: true
+Fields:  false
+Methods: false
+Params:  false
+Output:  D:\mod\expattern_better\build\fg_cache\mcp\1.20.1-20230612.114412\joined\c5b3b0d268a7cd3011759749524ead65d66e0665\mergeMappings\output.jar

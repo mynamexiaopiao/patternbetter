@@ -17,6 +17,8 @@ public class MyConfigScreen extends Screen {
     private boolean isPageButton;
     private boolean isJumpBox;
     private boolean isPatternsInto;
+    private boolean isEditMode;
+    private boolean isBalanceMode;
 
     public MyConfigScreen(Screen parent) {
         super(Component.literal("My Mod Config"));
@@ -29,6 +31,8 @@ public class MyConfigScreen extends Screen {
         isPageButton = ModConfig.pageButton;
         isJumpBox = ModConfig.jumpBox;
         isPatternsInto = ModConfig.patternsInto;
+        isEditMode = ModConfig.editMode;
+        isBalanceMode = ModConfig.balanceMode;
         String pageButtonText = "patternbetter.configuration.pagebutton";
         String jumpBoxText = "patternbetter.configuration.jumpbox";
         String patternsIntoText = "patternbetter.configuration.patternsinto";
@@ -62,9 +66,25 @@ public class MyConfigScreen extends Screen {
                 }
         ).bounds(wid, baseHeight + 50, 300, 20).build());
 
+        this.addRenderableWidget(Button.builder(
+                Component.translatable("patternbetter.configuration.editmode").append("：").append(String.valueOf(isEditMode)),
+                btn -> {
+                    isEditMode = !isEditMode;
+                    btn.setMessage(Component.translatable("patternbetter.configuration.editmode").append("：").append(String.valueOf(isEditMode)));
+                }
+        ).bounds(wid, baseHeight + 75, 300, 20).build());
+
+        this.addRenderableWidget(Button.builder(
+                Component.translatable("patternbetter.configuration.balancemode").append("：").append(String.valueOf(isBalanceMode)),
+                btn -> {
+                    isBalanceMode = !isBalanceMode;
+                    btn.setMessage(Component.translatable("patternbetter.configuration.balancemode").append("：").append(String.valueOf(isBalanceMode)));
+                }
+        ).bounds(wid, baseHeight + 100, 300, 20).build());
+
         // 数字输入框
         numberBox = new EditBox(this.font,
-                wid, baseHeight + 75, 300, 20,
+                wid, baseHeight + 125, 300, 20,
                 Component.translatable(slotValueText));
         numberBox.setValue(String.valueOf(ModConfig.SLOT_VALUE.get()));
         numberBox.setHint(Component.literal("输入数字")); // 添加提示

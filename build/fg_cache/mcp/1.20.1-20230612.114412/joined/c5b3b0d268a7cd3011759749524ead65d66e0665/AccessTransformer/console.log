@@ -1,0 +1,6 @@
+JVM:         C:\Users\Administrator\.jdks\ms-17.0.15\bin\java.exe
+JVM Args:    
+Run Args:    "--inJar", "D:\mod\expattern_better\build\fg_cache\mcp\1.20.1-20230612.114412\joined\c5b3b0d268a7cd3011759749524ead65d66e0665\rename\output.jar", "--outJar", "D:\mod\expattern_better\build\fg_cache\mcp\1.20.1-20230612.114412\joined\c5b3b0d268a7cd3011759749524ead65d66e0665\AccessTransformer\output.jar", "--atFile", "D:\mod\expattern_better\src\main\resources\META-INF\accesstransformer.cfg", "--atFile", "C:\Users\Administrator\AppData\Local\Temp\FG_ats_5740012616291297906.cfg"
+Classpath:   C:\Users\Administrator\.gradle\caches\forge_gradle\maven_downloader\net\minecraftforge\accesstransformers\8.2.1\accesstransformers-8.2.1-fatjar.jar
+Working Dir: D:\mod\expattern_better\build\fg_cache\mcp\1.20.1-20230612.114412\joined\c5b3b0d268a7cd3011759749524ead65d66e0665\AccessTransformer
+Main Class:  net.minecraftforge.accesstransformer.TransformerProcessor

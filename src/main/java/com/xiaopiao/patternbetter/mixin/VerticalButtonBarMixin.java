@@ -5,6 +5,8 @@ import appeng.client.gui.ICompositeWidget;
 import appeng.client.gui.widgets.VerticalButtonBar;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.renderer.Rect2i;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 import org.spongepowered.asm.mixin.*;
 
 import java.util.List;

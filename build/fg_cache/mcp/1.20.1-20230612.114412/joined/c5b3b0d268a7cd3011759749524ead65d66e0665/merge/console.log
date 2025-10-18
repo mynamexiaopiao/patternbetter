@@ -1,0 +1,6 @@
+JVM:         C:\Users\Administrator\.jdks\ms-17.0.15\bin\java.exe
+JVM Args:    
+Run Args:    "--client", "D:\mod\expattern_better\build\fg_cache\mcp\1.20.1-20230612.114412\joined\c5b3b0d268a7cd3011759749524ead65d66e0665\stripClient\output.jar", "--server", "D:\mod\expattern_better\build\fg_cache\mcp\1.20.1-20230612.114412\joined\c5b3b0d268a7cd3011759749524ead65d66e0665\stripServer\output.jar", "--ann", "1.20.1", "--output", "D:\mod\expattern_better\build\fg_cache\mcp\1.20.1-20230612.114412\joined\c5b3b0d268a7cd3011759749524ead65d66e0665\merge\output.jar", "--inject", "false"
+Classpath:   C:\Users\Administrator\.gradle\caches\forge_gradle\maven_downloader\net\minecraftforge\mergetool\1.1.7\mergetool-1.1.7-fatjar.jar
+Working Dir: D:\mod\expattern_better\build\fg_cache\mcp\1.20.1-20230612.114412\joined\c5b3b0d268a7cd3011759749524ead65d66e0665\merge
+Main Class:  net.minecraftforge.mergetool.ConsoleMerger

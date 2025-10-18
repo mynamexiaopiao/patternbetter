@@ -102,6 +102,16 @@ minecraft {
         server {
             property 'forge.enabledGameTestNamespaces', mod_id
             args '--nogui'
+
+            // Forge 日志更详细
+            property 'forge.logging.markers', 'MIXIN,SCAN'
+            property 'forge.logging.console.level', 'debug'
+
+            // Mixin 调试
+            jvmArg '-Dmixin.debug.verbose=true'
+            jvmArg '-Dmixin.debug.export=true'
+            jvmArg '-Dmixin.dumpTargetOnFailure=true'
+            jvmArg '-Dmixin.checks.interfaces=true'
         }
 
         // This run config launches GameTestServer and runs all registered gametests, then exits.

@@ -26,6 +26,13 @@ public class ModConfig {
             .comment("Whether to turn on the Quick Put patterns button")
             .define("patternsinto",true);
 
+    protected static ForgeConfigSpec.BooleanValue EDIT_MODE = BUILDER
+            .comment("Whether to turn on the Quick Put patterns button")
+            .define("editmode",true);
+    protected static ForgeConfigSpec.BooleanValue BALANCE_MODE = BUILDER
+            .comment("Whether to turn on the Quick Put patterns button")
+            .define("balancemode",true);
+
 
     public static final ForgeConfigSpec CONFIG = BUILDER.build();
 
@@ -33,12 +40,16 @@ public class ModConfig {
     public static boolean pageButton;
     public static boolean jumpBox;
     public static boolean patternsInto;
+    public static boolean editMode;
+    public static boolean balanceMode;
 
     public static void getConfig() {
         slotValue = SLOT_VALUE.get();
         pageButton = PAGE_BUTTON.get();
         jumpBox = JUMP_BOX.get();
         patternsInto = PATTERNS_INTO.get();
+        editMode = EDIT_MODE.get();
+        balanceMode = BALANCE_MODE.get();
     }
 
     @SubscribeEvent
