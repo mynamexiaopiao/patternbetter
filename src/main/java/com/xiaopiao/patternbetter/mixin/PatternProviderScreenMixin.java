@@ -38,7 +38,6 @@ public class PatternProviderScreenMixin<C extends PatternProviderMenu> extends A
         if (ModConfig.balanceMode){
             ActionEPPButton balance = new ActionEPPButton((b) -> EAENetworkHandler.INSTANCE.sendToServer(new CEAEGenericPacket("balance")), NewIcon.BALANCE);
             balance.setMessage(Component.translatable("gui.patternbetter.balance"));
-            balance.setTooltip(Tooltip.create(Component.translatable("gui.patternbetter.balance.tooltip")));
             rightToolbar.add(balance);
         }
 
@@ -58,7 +57,6 @@ public class PatternProviderScreenMixin<C extends PatternProviderMenu> extends A
         if (ModConfig.patternsInto){
             ActionEPPButton patternsInto = new ActionEPPButton((b) -> EAENetworkHandler.INSTANCE.sendToServer(new CEAEGenericPacket("patternsInto")), NewIcon.PATTERNSINTO);
             patternsInto.setMessage(Component.translatable("gui.patternbetter.patternsInto"));
-            patternsInto.setTooltip(Tooltip.create(Component.translatable("gui.patternbetter.patternsInto.tooltip")));
 
             this.addToLeftToolbar(patternsInto);
         }
