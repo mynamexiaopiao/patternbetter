@@ -165,7 +165,27 @@ public abstract class PatternProviderMenuMixin extends AEBaseMenu {
             }
         }
 
+        // 3. 将未能放置的样板放回玩家背包
+        if (patternIndex < patternsToMove.size()) {
+            for (int i = patternIndex; i < patternsToMove.size(); i++) {
+                // 寻找玩家背包中的空槽位来放置剩余样板
+                boolean placed = false;
+                for (Slot slot : playerSlots) {
+                    if (slot.getItem().isEmpty()) {
+                        slot.set(patternsToMove.get(i));
+                        placed = true;
+                        break;
+                    }
+                }
+                // 如果找不到空槽位，则丢弃或以其他方式处理（例如掉落物品）
+                if (!placed) {
+                    // 可选：丢弃、掉落物品等处理
+                    // 例如：dropItem(patternsToMove.get(i));
+                }
+            }
+        }
     }
+
 
     @Unique
     public void multiply2(boolean is , int i){
